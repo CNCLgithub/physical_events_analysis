@@ -9,7 +9,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 # Where are the videos?
-movie_folder='/gpfs/milgram/scratch/turk-browne/tsy6/physical_events/movies/'
+movie_folder=sys.argv[1] # give as input where the movies are 
 base_movies=os.listdir(movie_folder)
 base_movies=[mov for mov in base_movies if '.' not in mov]
 print(base_movies)
@@ -18,7 +18,7 @@ print(base_movies)
 video_pixel_change=dict()
 
 # which base movie are you going to look at? 
-base_idx=sys.argv[1]
+base_idx=sys.argv[2]
 base_idx=int(base_idx)
 
 
@@ -72,7 +72,7 @@ for v in os.listdir(movie_folder+base_movies[base_idx]):
         cv2.destroyAllWindows()
         video.release()
         
-        # ignore the the countdown to the video which ends at 92/3 frames in 
+        # ignore the countdown to the video which ends at 93 frames in 
         all_diffs=all_diffs[93:]
     
         #plt.figure()
@@ -89,9 +89,9 @@ for v in os.listdir(movie_folder+base_movies[base_idx]):
         probe_pixel_change=np.nanmean(all_diffs[round(probe_start_frame):round(probe_start_frame+frame_rate*probe_every)])
         print('Average pixel change during probe: %0.4f'%(probe_pixel_change)) 
         
-        video_pixel_change[video_name]=probe_pixel_change
+        video_pixel_change[base_movies[base_idx]]=probe_pixel_change
         
         
-with open('%s_pixel_changes.json' %base_movies[base_idx], 'w') as fp:
+with open('%s_pixel_changes.json' % base_movies[base_idx], 'w') as fp:
     json.dump(video_pixel_change, fp)
         
